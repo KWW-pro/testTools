@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../common/bootstrap-3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../common/bootstrap-3.3.7/css/bootstrap-table.css">
+    <link rel="stylesheet" href="../css/queryTaskModal.css">
+
+</head>
+
+<body class="content">
+    <!-- 查询任务弹窗 -->
+    <div class="modal-content" id="queryTaskModal1">
+        <div class="modal-header">
+            <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button> -->
+            <h3 class="modal-title" id="quertTaskTitle">全部任务</h5>
+        </div>
+        <div class="modal-body">
+            <div class="task-table">
+                <table id="queryTaskTable" class="table table-striped table-borderless">
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="close-btn" id="queryTaskclosebtnmodal">
+                <div>
+                    <input type="button" class="common-btn" data-dismiss="modal" id="queryTaskclosebtn" value="确认">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../common/jquery-3.3.1.js"></script>
+    <script src="../common/bootstrap-3.3.7/js/bootstrap.js"></script>
+    <script src="../common/bootstrap-3.3.7/js/bootstrap-table.js"></script>
+    <script type="text/javascript" src="../common/echarts.common.min.js"></script>
+    <script type="text/javascript" src="../common/bootstrap-3.3.7/js/bootstrap-paginator.min.js"></script>
+    <script src="../js/common/common.js"></script>
+    <script src="../js/queryTaskModal.js"></script>
+</body>
+
+</html>

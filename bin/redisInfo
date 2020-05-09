@@ -1,0 +1,131 @@
+#!/bin/bash  
+getData()
+{
+    TMP=$(cat $1 | grep -w $2 | awk -F ':' '{ print $2 }')
+}
+
+HELP_INFO="usage: $0 [--help][-h] [-H[=]<host>] [-P[=]<port>] [-T[=]<timeOut(s)>] [-A[=]<password>] [-F[=]<taskId>] "
+HOST="localhost"
+PORT="6379"
+TIME_OUT=1
+QUIT=1
+optspec=":hQH:P:A:F:T:-:"
+while getopts "$optspec" optchar; do
+    case "${optchar}" in
+        -)
+            case "${OPTARG}" in
+                help)
+                    echo $HELP_INFO
+                    exit 0;
+		    ;;
+                *)
+                    if [ "$OPTERR" = 1 ] && [ "${optspec:0:1}" = ":" ]; then
+                        echo "Unknown option --${OPTARG}" >&2
+			exit 1
+                    fi
+                    ;;
+            esac;;
+        h)
+            echo $HELP_INFO
+            exit 0;
+	    ;;
+	    F)
+	    TASK_ID=${OPTARG}
+	    ;;
+        H)
+            HOST=${OPTARG}
+            ;;
+	A)
+	    PASSWORD=${OPTARG}
+	    ;;
+        P)
+            PORT=${OPTARG}
+            ;;
+        T)
+            TIME_OUT=${OPTARG}
+            ;;
+	Q)
+	    QUIT=0
+	    ;;
+        *)
+            if [ "$OPTERR" != 1 ] || [ "${optspec:0:1}" = ":" ]; then
+                echo "Non-option argument: '-${OPTARG}'" >&2
+		exit 1
+            fi
+            ;;
+    esac
+done
+
+
+if [ x == "$TASK_ID"x ];then
+    echo "no taskId"
+    exit 1
+fi
+
+if [ "0"x == "$QUIT"x ];then
+	TASK="-F $TASK_ID"
+	QUIT_PID=$(ps aux|grep redisInfo|grep $TASK|grep -v "grep"|awk '{print $2}')
+	kill -9 $QUIT_PID
+	exit 0
+fi
+
+CONF_PATH="$(dirname $0)/../etc/dataMysql.conf"
+mysqlHost=$(cat $CONF_PATH | grep mysqlHost | awk -F '\"' '{print $2}')
+mysqlUser=$(cat $CONF_PATH | grep mysqlUser | awk -F '\"' '{print $2}')
+mysqlPassword=$(cat $CONF_PATH | grep mysqlPassword | awk -F '\"' '{print $2}')
+mysqlPort=$(cat $CONF_PATH | grep mysqlPort | awk -F '=' '{print $2}' | awk -F ';' '{print $1}')
+SQL="INSERT INTO \`test_tools\`.\`TEST_TASK\`(\`TASK_ID\`, \`TASK_SERVICE\`, \`TASK_DATE\`) VALUES (\"$TASK_ID\", \"redis\", \"$(date +%Y-%m-%dT%H:%M:%S)\")"
+mysql -P $mysqlPort -h$mysqlHost  -u$mysqlUser -p$mysqlPassword  -e "$SQL" >/dev/null 2>&1
+
+
+DATA_PATH="$(dirname $0)/../data/infoData/$TASK_ID"
+
+REDIS_CLI="/usr/bin/redis-cli"
+if [ ""x == "$PASSWORD"x ];then
+	REDIS_INFO_COMMAND="$REDIS_CLI -h $HOST -p $PORT  info all "
+else
+	REDIS_INFO_COMMAND="$REDIS_CLI -h $HOST -p $PORT -a $PASSWORD info all "
+fi
+DATA_NAME=(
+	used_memory_rss used_memory_peak used_cpu_sys used_cpu_user 
+    	connected_clients blocked_clients cmdstat_ping cmdstat_get cmdstat_set 
+        keyspace_hits keyspace_misses total_net_input_bytes 
+	total_net_output_bytes memory_perc keyspace_hits_perc
+)
+DATA_COUNT=13
+TMP_DATA_COUNT=14
+TMPSQL=
+while((1));do
+    i=0
+    $REDIS_INFO_COMMAND > $DATA_PATH 2>&1
+    sed -i "s///g" $DATA_PATH
+    while(($i<$DATA_COUNT));do
+        getData $DATA_PATH ${DATA_NAME[$i]}
+        DATA[$i]=$TMP
+        let i++
+    done
+    DATA[6]=$(echo ${DATA[6]} | awk -F 'call=' '{print $2}')
+    DATA[7]=$(echo ${DATA[7]} | awk -F 'call=' '{print $2}')
+    DATA[8]=$(echo ${DATA[8]} | awk -F 'call=' '{print $2}')
+    getData $DATA_PATH total_system_memory
+    DATA[13]=$(awk 'BEGIN{printf "%.2f%\n",('${DATA[0]}'/'$TMP')*100}')
+    DATA[13]=$(echo "${DATA[13]}" | awk -F '%' '{print $1}')
+    TMP=$((${DATA[9]}+${DATA[10]}))
+    DATA[14]=$(awk 'BEGIN{printf "%.2f%\n",('${DATA[9]}'/'$TMP')*100}')
+    DATA[14]=$(echo "${DATA[14]}" | awk -F '%' '{print $1}')
+    i=0
+    SQL="INSERT INTO \`test_tools\`.\`REDIS_INFO\`(\`TASK_ID\`, \`INFO_DATE\`,"
+    while(($i<$TMP_DATA_COUNT));do
+        SQL="$SQL ${DATA_NAME[$i]},"
+	let i++
+    done
+    SQL="$SQL ${DATA_NAME[$i]}) VALUES (\"$TASK_ID\",\"$(date +%Y-%m-%dT%H:%M:%S)\","
+    i=0
+    while(($i<$TMP_DATA_COUNT));do
+        SQL="$SQL \"${DATA[$i]}\","
+	let i++
+    done
+    SQL="$SQL \"${DATA[$i]}\")"
+    mysql -P $mysqlPort -h$mysqlHost  -u$mysqlUser -p$mysqlPassword  -e "$SQL" >/dev/null 2>&1
+    sleep $TIME_OUT
+done

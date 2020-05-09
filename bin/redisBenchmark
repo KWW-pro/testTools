@@ -1,0 +1,134 @@
+#!/bin/bash  
+
+getData()
+{
+    if [ "$2"x == "LPUSH"x ]; then
+    	TMP=$(cat $1 | grep -w $2 | grep -v need |awk -F ':' '{ print $2 }')
+    else
+    	TMP=$(cat $1 | grep -w $2 | awk -F ':' '{ print $2 }')
+    fi
+}
+
+HELP_INFO=" usage: $0 [--help][-h] [-H[=]<host>] [-P[=]<port>] [-A[=]<password>] [-T[=]<test(test1,test2,...)> [-C[=]<connect count>] [-N[=]<commond number>] [-F[=]<taskId>] [-S[=]<valueSize>]]"
+HOST="localhost"
+PORT="6379"
+
+CONNECT=50
+NUMBER=10000
+TIME_OUT=1
+VALUESIZE=2
+optspec=":hH:P:A:S:T:F:C:N:-:"
+while getopts "$optspec" optchar; do
+    case "${optchar}" in
+        -)
+            case "${OPTARG}" in
+                help)
+                    echo $HELP_INFO
+                    ;;
+                *)
+                    if [ "$OPTERR" = 1 ] && [ "${optspec:0:1}" = ":" ]; then
+                        echo "Unknown option --${OPTARG}" >&2
+                        exit 1;
+                    fi
+                    ;;
+            esac;;
+        h)
+            echo $HELP_INFO
+            exit 1;
+            ;;
+        H)
+            HOST=${OPTARG}
+            ;;
+        P)
+            PORT=${OPTARG}
+            ;;
+	A)
+	    PASSWORD=${OPTARG}
+	    ;;
+        T)
+            TEST=${OPTARG}
+            ;;
+        F)
+            TASK_ID=${OPTARG}
+            ;;
+        C)
+            CONNECT=${OPTARG}
+            ;;
+        S)
+            VALUESIZE=${OPTARG}
+            ;;
+        N)
+            NUMBER=${OPTARG}
+            ;;
+        *)
+            if [ "$OPTERR" != 1 ] || [ "${optspec:0:1}" = ":" ]; then
+                echo "Non-option argument: '-${OPTARG}'" >&2
+                exit 1;
+            fi
+            ;;
+    esac
+done
+if [ x == "$TASK_ID"x ];then
+    echo "no taskId"
+    exit 1;
+fi
+DATA_PATH="$(dirname $0)/../data/benchmarkData/$TASK_ID"
+#mkdir -p $DATA_PATH
+REDIS_BENCHMARK="/usr/bin/redis-benchmark"
+if [ ""x == "$PASSWORD"x ];then
+	REDIS_BENCHMARK_COMMAND_TMP="$REDIS_BENCHMARK -h $HOST -p $PORT -c $CONNECT -n $NUMBER -d $VALUESIZE --csv"
+else
+	REDIS_BENCHMARK_COMMAND_TMP="$REDIS_BENCHMARK -h $HOST -p $PORT -a $PASSWORD -c $CONNECT -n $NUMBER -d $VALUESIZE --csv"
+fi
+if [ "$TEST"x != x ];then
+    REDIS_BENCHMARK_COMMAND="$REDIS_BENCHMARK_COMMAND_TMP -t $TEST"
+else
+    REDIS_BENCHMARK_COMMAND=$REDIS_BENCHMARK_COMMAND_TMP
+fi
+$REDIS_BENCHMARK_COMMAND > $DATA_PATH 2>&1
+sed -i 's/\"//g' $DATA_PATH
+sed -i 's/,/:/g' $DATA_PATH
+sed -i 's///g' $DATA_PATH
+DATA_NAME=(
+    SET GET INCR LPUSH RPUSH LPOP 
+    RPOP SADD HSET SPOP LRANGE_100 
+    LRANGE_300 LRANGE_500 LRANGE_600 
+    MSET)
+DATA_COUNT=14
+TMP_DATA_COUNT=15
+i=0
+while(($i<$TMP_DATA_COUNT));do
+    getData $DATA_PATH ${DATA_NAME[$i]}
+    DATA[$i]=$TMP
+    if [ "${DATA[$i]}"x == x ];then
+	    DATA[$i]=0
+    fi
+    let i++
+done
+i=0
+SQL="INSERT INTO \`test_tools\`.\`REDIS_TEST\`(\`TASK_ID\`, \`TEST_TYPE\`,"
+while(($i<$DATA_COUNT));do
+        SQL="$SQL\`${DATA_NAME[$i]}\`,"
+    let i++
+done
+SQL="$SQL\`${DATA_NAME[$i]}\`"
+i=0
+SQL="$SQL) VALUES (\"$TASK_ID\", \"redisBenchmark\","
+while(($i<$DATA_COUNT));do
+        SQL="$SQL ${DATA[$i]},"
+    let i++
+done
+SQL="$SQL ${DATA[$i]})"
+CONF_PATH="$(dirname $0)/../etc/dataMysql.conf"
+mysqlHost=$(cat $CONF_PATH | grep mysqlHost | awk -F '\"' '{print $2}')
+mysqlUser=$(cat $CONF_PATH | grep mysqlUser | awk -F '\"' '{print $2}')
+mysqlPassword=$(cat $CONF_PATH | grep mysqlPassword | awk -F '\"' '{print $2}')
+mysqlPort=$(cat $CONF_PATH | grep mysqlPort | awk -F '=' '{print $2}' | awk -F ';' '{print $1}')
+mysql -P $mysqlPort -h$mysqlHost  -u$mysqlUser -p$mysqlPassword  -e "$SQL" >/dev/null 2>&1 
+if [ $? -ne 0 ];then
+    exit 0
+else
+    exit 1
+fi
+
+

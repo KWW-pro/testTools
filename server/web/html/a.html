@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>父页面</title>
+        <style type="text/css">
+            .box{
+                width: 600px;
+                height: 400px;
+                margin: 10px auto;
+            }
+            h3{
+                font-size: 16px;
+            }
+            .cont{
+                width: 100%;
+            }
+            .cont h4{
+                font-size: 14px;
+            }            
+            .cont #texts{
+                width: 100%;
+                line-height: 22px;
+                font-size: 13px;
+                color: #2E2D3C;
+            }
+            
+            iframe{
+                /*只是隐藏，但任然保留DOM结构*/
+                visibility: hidden;  
+            }
+        </style>
+    </head>
+    <body>
+        <div class="box">
+            <h3>这是父页面</h3>
+            <div class="cont">
+                <h4>这是从子页面传入的数据：</h4>
+                <div id="texts"></div>
+                <iframe src="./b.html" width="1px" height="1px" class="myIframe" name="myIframe"></iframe>
+            </div>
+        </div>
+        
+        
+        <script type="text/javascript">
+            //获取子页面传入的数据
+            function GetChildValue(obj){
+                document.getElementById('texts').innerText = obj;
+            }
+            
+            //给子页面传入数据
+            function toChildValue(){
+                var txt = '这是父页面给子页面的数据';
+                return txt;
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,75 @@
+.content{
+    height: 640px;
+    margin: 0px;
+}
+
+
+/* 弹窗内容 */
+.content .modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border-radius: 0px;
+    height: 640px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+.modal-title{
+    margin: auto;
+    text-align: center;
+}
+/* 关闭按钮 */
+.close {
+    color: black;
+    float: right;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    /* background-color: #5cb85c;
+    color: white; */
+    height: 40px;
+}
+
+.modal-body {
+    padding: 0px;
+    height: 557px;
+}
+
+.modal-footer {
+    padding: 2px 16px;
+    /* background-color: #5cb85c;
+    color: white; */
+    height: 40px;
+    margin-top: 2px;
+    padding-top: 3px;
+}
+#queryTaskclosebtnmodal{
+    margin: auto;
+    text-align: center;
+}
+
+.task-table{
+    height: 557px;
+}
+.fixed-table-container{
+    border: 0px;
+    border-radius: 0px;
+}
+.fixed-table-body{
+    height: 93%;
+
+}
