@@ -10,9 +10,9 @@ import json
 import threading
 from db_tables import *
 import configparser
-
+curr_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 cf = configparser.ConfigParser()
-cf.read("../etc/pythonToDb.conf")
+cf.read(curr_dir + "/etc/pythonToDb.conf")
 
 MySqlHost = cf.get("mysql", "mysqlHost")
 MySqlPort = cf.get("mysql", "mysqlPort")
@@ -93,26 +93,23 @@ class testTools:
 
     def redisBenchmark(self, params):
         try:
-            os.system('../bin/redisBenchmark -H %s -P %s -T "%s" -C %s -S %s -F %s -N %s -A "%s"'
+            os.system( curr_dir + '/bin/redisBenchmark -H %s -P %s -T "%s" -C %s -S %s -F %s -N %s -A "%s"'
                       % (params['Host'], params['Port'], params['CommondList'], params['ConnectCount'], params['ValueSize'],
                          params['TaskID'], params['CommondCount'], params['RedisServerPassword']))
-            print('../bin/redisBenchmark -H %s -P %s -T "%s" -C %s -S %s -F %s -N %s -A %s' % (params['Host'], params['Port'], params['CommondList'], params['ConnectCount'], params['ValueSize'], params['TaskID'], params['CommondCount'], params['RedisServerPassword']))
         except Exception as e:
             print(e)
 
     def reidHi(self, params):
         try:
-            os.system('../bin/redisHi -H %s -P %s -T %s -C %s -S %s -F %s -N %s -A %s'
+            os.system(curr_dir + '/bin/redisHi -H %s -P %s -T %s -C %s -S %s -F %s -N %s -A %s'
                       % (params['Host'], params['Port'], params['CommondList'], params['ConnectCount'], params['ValueSize'],
                          params['TaskID'], params['CommondCount'], params['RedisServerPassword']))
-            print('../bin/redisHi -H %s -P %s -T %s -C %s -S %s -F %s -N %s -A %s' % (params['Host'], params['Port'], params['CommondList'], params['ConnectCount'], params['ValueSize'], params['TaskID'], params['CommondCount'], params['RedisServerPassword']))
-
         except Exception as e:
             print(e)
     
     def redisInfoQuit(self, params):
         try:
-            os.system('../bin/redisInfo -Q -F %s' % params['TaskID'])
+            os.system(curr_dir + '/bin/redisInfo -Q -F %s' % params['TaskID'])
         except Exception as e:
             print(e)
 
