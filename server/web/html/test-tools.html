@@ -20,109 +20,111 @@
    <!--主页签-->
   <div class="test-tools-content">  
     <!-- 上方测试条件部分 -->
-    <div class="test-tools-top">
-      <!-- 测试条件 -->
-      <div class="test-fold" id="test-fold">
-        <div class="search-cond-area-title">
-          测试条件&nbsp;&nbsp;&nbsp;
+    <div class="test-and-query">
+      <div class="test-tools-top">
+        <!-- 测试条件 -->
+        <div class="test-fold" id="test-fold">
+          <div class="search-cond-area-title">
+            测试条件&nbsp;&nbsp;&nbsp;
+          </div>
+          <div class="search-info">
+            <div class="form-group">
+              <div class="item" style="padding-left: 16px;">
+                <span class="search-span">服务器IP</span>
+                <div class="ipt">
+                  <input type="text" autocomplete="off" id="serverip">
+                </div>
+              </div>
+              <div class="item" style="padding-left: 32px;">
+                <span class="search-span">服务器端口</span>
+                <div class="ipt">
+                  <input type="text" ,autocomplete="off" id="serverport">
+                </div>
+              </div>
+              <div class="item" style="padding-left: 127px;">
+                <span class="search-span">测试模块</span>
+                <div class="ipt">
+                  <select class="select" id="type">
+                    <option value="-999">redis-benchmark</option>
+                    <option value="0">hiredis</option>
+                    <option value="1">全部</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="item">
+                <span class="search-span">并发连接数</span>
+                <div class="ipt">
+                  <input type="text" ,autocomplete="off" id="connectCount">
+                </div>
+              </div>
+              <div class="item"  style="padding-left: 80px;">
+                <span class="search-span">请求数</span>
+                <div class="ipt">
+                  <input type="text" ,autocomplete="off" id="commondCount">
+                </div>
+              </div>
+              <div class="item">
+                <span class="search-span">SET/GET值的数据大小</span>
+                <div class="ipt">
+                  <input type="text" ,autocomplete="off" id="valueSize">
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="item">
+                <span class="search-span">执行的命令</span>
+                <div class="ipt">
+                  <input type="text" ,autocomplete="off" id="commondList">
+                </div>
+              </div>
+              <div class="item">
+                <span class="search-span">性能采集时间间隔</span>
+                <div class="ipt">
+                  <input type="text" ,autocomplete="off" id="timeOut">
+                </div>
+              </div>
+              <div class="item" style="padding-left: 123px;">
+                <span class="search-span">redis服务器密码</span>
+                <div class="ipt">
+                  <input type="text" ,autocomplete="off" id="redisServerPassword">
+                </div>
+              </div>
+            </div>
+          </div>
+  
         </div>
-        <div class="search-info">
-          <div class="form-group">
-            <div class="item" style="padding-left: 16px;">
-              <span class="search-span">服务器IP</span>
-              <div class="ipt">
-                <input type="text" autocomplete="off" id="serverip">
-              </div>
-            </div>
-            <div class="item" style="padding-left: 32px;">
-              <span class="search-span">服务器端口</span>
-              <div class="ipt">
-                <input type="text" ,autocomplete="off" id="serverport">
-              </div>
-            </div>
-            <div class="item" style="padding-left: 127px;">
-              <span class="search-span">测试模块</span>
-              <div class="ipt">
-                <select class="select" id="type">
-                  <option value="-999">redis-benchmark</option>
-                  <option value="0">hiredis</option>
-                  <option value="1">全部</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="item">
-              <span class="search-span">并发连接数</span>
-              <div class="ipt">
-                <input type="text" ,autocomplete="off" id="connectCount">
-              </div>
-            </div>
-            <div class="item"  style="padding-left: 80px;">
-              <span class="search-span">请求数</span>
-              <div class="ipt">
-                <input type="text" ,autocomplete="off" id="commondCount">
-              </div>
-            </div>
-            <div class="item">
-              <span class="search-span">SET/GET值的数据大小</span>
-              <div class="ipt">
-                <input type="text" ,autocomplete="off" id="valueSize">
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="item">
-              <span class="search-span">执行的命令</span>
-              <div class="ipt">
-                <input type="text" ,autocomplete="off" id="commondList">
-              </div>
-            </div>
-            <div class="item">
-              <span class="search-span">性能采集时间间隔</span>
-              <div class="ipt">
-                <input type="text" ,autocomplete="off" id="timeOut">
-              </div>
-            </div>
-            <div class="item" style="padding-left: 123px;">
-              <span class="search-span">redis服务器密码</span>
-              <div class="ipt">
-                <input type="text" ,autocomplete="off" id="redisServerPassword">
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-      <!-- 测试按钮 -->
-      <div class="test-botton">
-        <input type="button" class="common-btn" id="starttestbtn" value="开始测试" style="width: 97px; height: 31px;">
-        <input type="button" class="common-btn" id="querytestbtn" value="查询任务" style="width: 97px; height: 31px;">
-
-      </div>
-    </div>
-    <!-- 上方查询条件部分 -->
-    <div class="test-tools-query">
-      <!-- 查询条件 -->
-      <div class="query-centent" id="query-centent">
-        <div class="query-cond-area-title">
-          查询条件&nbsp;&nbsp;&nbsp;
-        </div>
-        <div class="query-info">
-          <div class="form-group">
-            <div class="item" style="padding-left: 32px;">
-              <span class="search-span">任务ID</span>
-              <div class="ipt">
-                <input type="text" ,autocomplete="off" id="taskID">
-              </div>
-            </div>
-          </div>
+        <!-- 测试按钮 -->
+        <div class="test-botton">
+          <input type="button" class="common-btn" id="starttestbtn" value="开始测试" style="width: 97px; height: 31px;">
+          <input type="button" class="common-btn" id="querytestbtn" value="查询任务" style="width: 97px; height: 31px;">
+  
         </div>
       </div>
-      <!-- 查询按钮 -->
-      <div class="query-botton">
-        <input type="button" class="common-btn" id="querRedisInfoybtn" value="查询RedisInfo" style="width: 97px; height: 31px;">
-        <input type="button" class="common-btn" id="queryRedisTaskbtn" value="查询RedisTask" style="width: 97px; height: 31px;">
+      <!-- 上方查询条件部分 -->
+      <div class="test-tools-query">
+        <!-- 查询条件 -->
+        <div class="query-centent" id="query-centent">
+          <div class="query-cond-area-title">
+            查询条件&nbsp;&nbsp;&nbsp;
+          </div>
+          <div class="query-info">
+            <div class="form-group">
+              <div class="item" style="padding-left: 32px;">
+                <span class="search-span">任务ID</span>
+                <div class="ipt">
+                  <input type="text" ,autocomplete="off" id="taskID">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 查询按钮 -->
+        <div class="query-botton">
+          <input type="button" class="common-btn" id="querRedisInfoybtn" value="查询RedisInfo" style="width: 97px; height: 31px;">
+          <input type="button" class="common-btn" id="queryRedisTaskbtn" value="查询RedisTask" style="width: 97px; height: 31px;">
+        </div>
       </div>
     </div>
     <!-- 下方展示部分 -->

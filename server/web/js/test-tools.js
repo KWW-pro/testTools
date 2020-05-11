@@ -34,19 +34,19 @@ function creatTaskID() {
 /*
 *功能：查询任务按钮
 */
-$("#querytestbtn").click(function(){
+$("#querytestbtn").click(function () {
     listData = [];
     var url = "getTestTask";
     var params = {};
     var ret;
-    sendRequest(false, "POST", url, params, function(result){
+    sendRequest(false, "POST", url, params, function (result) {
         ret = JSON.parse(result);
-        if(ret.result === 0){
+        if (ret.result === 0) {
             listData = ret.para;
-            console.log("listData",listData);
+            console.log("listData", listData);
             $("#queryTaskModaliframe")[0].contentWindow.initTaskTable(listData);
         }
-        else{
+        else {
             alert("查询任务失败");
             return;
         }
@@ -54,47 +54,59 @@ $("#querytestbtn").click(function(){
     $('#queryTaskModal').modal('show');
 })
 
-function childToParent(index){
-    taskID = listData[index].TaskID
-    $("#taskID").val(taskID);
-    $("#queryTaskModal").modal('hide')
+function childToParent(index) {
+    console.log("index", index);
+    if (index == undefined) {
+        alert("请选择任务");
+        return;
+
+    }
+    else {
+        taskID = listData[index].TaskID;
+        $("#taskID").val(taskID);
+        $("#queryTaskModal").modal('hide');
+    }
+}
+
+function hideChildWin(){
+    $("#queryTaskModal").modal('hide');
 }
 
 /*
 *功能：添加任务
 */
-$("#starttestbtn").click(function(){
+$("#starttestbtn").click(function () {
     startTest();
 })
 function startTest() {
     creatTaskID()
     var serverIp = $("#serverip").val();
-    if(!serverIp){
+    if (!serverIp) {
         alert("缺少服务器IP");
         return;
     }
 
     var serverport = $("#serverport").val();
-    if(!serverport){
+    if (!serverport) {
         alert("缺少服务器IP");
         return;
     }
-    
+
     var type = "-999";
     type = parseInt($("#type").val());
 
     var connectCount = $("#connectCount").val();
-    if(!connectCount){
+    if (!connectCount) {
         connectCount = "50";
     }
 
     var commondCount = $("#commondCount").val();
-    if(!commondCount){
+    if (!commondCount) {
         commondCount = "100000";
     }
 
     var valueSize = $("#valueSize").val();
-    if(!valueSize){
+    if (!valueSize) {
         valueSize = "2";
     }
 
@@ -102,12 +114,12 @@ function startTest() {
 
 
     var timeOut = $("#timeOut").val();
-    if(!timeOut){
+    if (!timeOut) {
         timeOut = "1";
     }
 
     var redisServerPassword = $("#redisServerPassword").val();
-    
+
     var url = "addTask";
     var params = {
         "TaskID": taskID,
@@ -122,17 +134,17 @@ function startTest() {
         "RedisServerPassword": redisServerPassword,
     };
     var ret;
-    console.log("content-----",params);
-    
-    sendRequest(false, "POST", url, params, function(result){
+    console.log("content-----", params);
+
+    sendRequest(false, "POST", url, params, function (result) {
         ret = JSON.parse(result);
         console.log("ret------->", ret);
-        if(ret.result === 0){
+        if (ret.result === 0) {
             alert("创建测试任务成功");
             $("#taskID").val(taskID);
             return;
         }
-        else{
+        else {
             alert("创建测试任务失败");
             return;
         }
@@ -144,7 +156,7 @@ function startTest() {
 */
 $("#querRedisInfoybtn").click(function () {
     taskID = $("#taskID").val();
-    console.log("taskID",taskID)
+    console.log("taskID", taskID)
     if (taskID) {
         g_resObjArr = [];
         var url = 'getDbInfo';
@@ -157,8 +169,8 @@ $("#querRedisInfoybtn").click(function () {
             console.log("ret------>", ret);
             if (ret.result === 0) {
                 g_resObjArr = ret.para;
-                if(g_resObjArr.length == 0){
-                    alert("任务正在进行中");
+                if (g_resObjArr.length == 0) {
+                    alert("任务执行失败");
                     return;
                 }
                 else
@@ -170,7 +182,7 @@ $("#querRedisInfoybtn").click(function () {
             }
         });
     }
-    else{
+    else {
         alert("缺少查询条件");
         return;
     }
@@ -195,7 +207,7 @@ function selectRedisInfo() {
 */
 $("#queryRedisTaskbtn").click(function () {
     taskID = $("#taskID").val();
-    if(taskID){
+    if (taskID) {
         redisTask_resArr = [];
         var url = 'getTaskInfo';
         var params = {
@@ -207,7 +219,7 @@ $("#queryRedisTaskbtn").click(function () {
             console.log("ret------>", ret);
             if (ret.result === 0) {
                 redisTask_resArr = ret.para;
-                if(redisTask_resArr.length == 0){
+                if (redisTask_resArr.length == 0) {
                     alert("任务正在进行中");
                     return;
                 }
@@ -220,11 +232,11 @@ $("#queryRedisTaskbtn").click(function () {
             }
         });
     }
-    else{
+    else {
         alert("缺少查询条件");
         return;
     }
-   
+
 
 })
 function selectRedisTask() {
@@ -364,7 +376,7 @@ function chartsInit(message) {
                 type: 'line',
                 stack: '总量',
                 data: message.USED_MEMORY_RSS,
-                showSymbol: false, 
+                showSymbol: false,
             },
             {
                 name: 'USED_MEMORY_PEAK',

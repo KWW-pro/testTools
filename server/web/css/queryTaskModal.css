@@ -1,5 +1,6 @@
 .content{
-    height: 640px;
+    height: 690px;
+    width: 100%;
     margin: 0px;
 }
 
@@ -11,7 +12,7 @@
     margin: auto;
     padding: 0;
     border-radius: 0px;
-    height: 640px;
+    height: 100%;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     -webkit-animation-name: animatetop;
     -webkit-animation-duration: 0.4s;
@@ -46,7 +47,7 @@
 
 .modal-body {
     padding: 0px;
-    height: 557px;
+    height: 87%;
 }
 
 .modal-footer {
@@ -63,7 +64,7 @@
 }
 
 .task-table{
-    height: 557px;
+    height: 100%;
 }
 .fixed-table-container{
     border: 0px;

@@ -94,7 +94,16 @@ function initTaskTable(listData) {
  * 功能： 确认按钮点击事件
  */
 
-$("#queryTaskclosebtn").click(function(){
+$("#queryTaskconfirmbtn").click(function(){
     parent.childToParent(index);
+
+});
+
+/**
+ * 功能： 取消按钮点击事件
+ */
+
+$("#queryTaskclosebtn").click(function(){
+    parent.hideChildWin(index);
 
 });
